@@ -4,6 +4,8 @@
 
 This is what every commercial agent tool would ship if they didn't have multi-tenant concerns to worry about. Runs at `localhost:3001`, fully local, fully yours.
 
+> **🚀 Visit [aifusio.com/mission-control](https://aifusio.com/mission-control.html)** for the full marketing page, screenshots, use-cases, FAQ, and what AI Fusio can build for your business. This README is the engineering quick-start; the website is the deep dive.
+
 ---
 
 ## Why use this
@@ -254,6 +256,20 @@ The 8000-line `ChatPanel.tsx` is the elephant in the room. We know. Splitting it
 MIT. See [`LICENSE`](./LICENSE).
 
 The bundled design CSS (`public/fusio/mc.css`) is part of the same MIT license.
+
+---
+
+## Want this built for your team?
+
+Fusio is a project by **[AI Fusio](https://aifusio.com)** — a consulting practice that integrates AI into mid-market businesses (contractors, professional services, home services, manufacturing). We open-sourced this platform because the best demo of what we build is letting you run it yourself.
+
+If you want the customized version — Mission Control integrated into your CRM, phones, documents, and team workflows, fully built and operated for you — we offer:
+
+- **AI Opportunity Audit** — from $2,500. Prioritized AI roadmap + a working pilot.
+- **AI Integration & Build** — from $10,000. Full integration scoped to your specific systems.
+- **Managed AI Department** — from $1,500/month. Ongoing AI ops department for your business.
+
+[**aifusio.com**](https://aifusio.com) · [Book a consultation](https://aifusio.com/#contact) · [Mission Control product page](https://aifusio.com/mission-control.html)
 
 ---
 
