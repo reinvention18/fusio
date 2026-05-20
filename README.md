@@ -1,10 +1,14 @@
 # Fusio — Single-User Agentic Operations Console
 
-> Internal codename: **Mission Control**. A local web app that orchestrates Claude (or Codex, or any other LLM via the MCP fabric) with persistent SQLite memory, a 5-repo skill library, multi-agent missions, cross-machine bridge, and a mobile PWA.
+> Internal codename: **Mission Control**. A local web app that orchestrates Claude (or Codex, or any other LLM via the MCP fabric) with persistent SQLite memory, a 5-repo skill library, multi-agent missions, an optional Tailscale-powered cross-machine bridge, and a mobile PWA.
 
-This is what every commercial agent tool would ship if they didn't have multi-tenant concerns to worry about. Runs at `localhost:3001`, fully local, fully yours.
+This is what every commercial agent tool would ship if they didn't have multi-tenant concerns to worry about. Runs as a Next.js web app at `localhost:3001`, fully local, fully yours.
 
-> **🚀 Visit [aifusio.com/mission-control](https://aifusio.com/mission-control.html)** for the full marketing page, screenshots, use-cases, FAQ, and what AI Fusio can build for your business. This README is the engineering quick-start; the website is the deep dive.
+> **🚀 Visit [aifusio.com/mission-control](https://aifusio.com/mission-control.html)** for the full marketing page, deep setup walkthrough, FAQ, and what AI Fusio can build for your business. This README is the engineering quick-start; the website is the comprehensive product page.
+
+![Fusio Dashboard](docs/screenshots/mc-dashboard.png)
+
+*The Dashboard — system health, recent chats, cron jobs, status, session viewer, skills loaded, usage, notifications, quick links.*
 
 ---
 
@@ -43,6 +47,22 @@ Open `http://localhost:3001`.
 Then drop your Anthropic API key into Settings → Credentials. That's the whole onboarding.
 
 For deeper setup (mobile PWA, cross-machine peers, skill repos, missions, teams) see `docs/`.
+
+---
+
+## Screenshots
+
+### Chat surface
+
+![Chat](docs/screenshots/mc-chat.png)
+
+*Sessions sidebar + project pill + model/mode/skills/repo status chips + Notepad and Tools menus. The composer at the bottom handles attachments, mentions, slash-commands, and the new fullscreen "terminal-look" toggle.*
+
+### Luke's Chat — multi-agent missions
+
+![Missions](docs/screenshots/mc-missions.png)
+
+*Phase-by-phase mission orchestrator. Orchestrator (Opus) plans, Workers (Sonnet) implement, Scrutiny (GPT-5 Codex) audits cross-provider, Playwright validates behaviorally. Survives MC restarts via persistent state + checkpoints.*
 
 ---
 
