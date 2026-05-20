@@ -23,6 +23,15 @@ This is what every commercial agent tool would ship if they didn't have multi-te
 ## Quick start
 
 ```bash
+# Recommended — one-shot scaffolder
+npx @aifusiomc/create-fusio
+cd fusio
+npm run dev
+```
+
+Or the manual way:
+
+```bash
 git clone https://github.com/reinvention18/fusio.git
 cd fusio
 npm install
