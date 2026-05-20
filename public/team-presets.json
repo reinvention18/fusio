@@ -1,0 +1,1111 @@
+[
+  {
+    "id": "smoke_test",
+    "name": "Smoke Test",
+    "description": "Minimal 2-agent test: 1 Builder + 1 Sentinel. Quick verification that the runtime works.",
+    "roles": [
+      {
+        "role": "builder",
+        "handle": "builder-1",
+        "model": "sonnet"
+      },
+      {
+        "role": "sentinel",
+        "handle": "sentinel",
+        "model": "haiku"
+      }
+    ],
+    "phases": [
+      {
+        "name": "Build",
+        "roles": [
+          "builder"
+        ],
+        "description": "Implement the change"
+      },
+      {
+        "name": "Verify",
+        "roles": [
+          "sentinel"
+        ],
+        "description": "Run tests"
+      }
+    ],
+    "default_settings": {
+      "review": {
+        "mode": "standard",
+        "skip_trivial": true
+      },
+      "hooks": {}
+    }
+  },
+  {
+    "id": "feature",
+    "name": "Feature",
+    "description": "Standard feature build: Architect plans \u2192 Scout researches \u2192 2 Builders code in parallel \u2192 Sentinel tests \u2192 Inspector reviews \u2192 Scribe documents.",
+    "roles": [
+      {
+        "role": "architect",
+        "handle": "architect",
+        "model": "opus"
+      },
+      {
+        "role": "scout",
+        "handle": "scout",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder-1",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder-2",
+        "model": "sonnet"
+      },
+      {
+        "role": "inspector",
+        "handle": "inspector",
+        "model": "sonnet"
+      },
+      {
+        "role": "sentinel",
+        "handle": "sentinel",
+        "model": "haiku"
+      },
+      {
+        "role": "scribe",
+        "handle": "scribe",
+        "model": "sonnet"
+      }
+    ],
+    "phases": [
+      {
+        "name": "Research",
+        "roles": [
+          "scout"
+        ],
+        "description": "Explore codebase and gather context"
+      },
+      {
+        "name": "Build",
+        "roles": [
+          "builder"
+        ],
+        "description": "Implement the feature"
+      },
+      {
+        "name": "Verify",
+        "roles": [
+          "sentinel",
+          "inspector"
+        ],
+        "description": "Test and review"
+      },
+      {
+        "name": "Report",
+        "roles": [
+          "scribe"
+        ],
+        "description": "Document and write PR"
+      }
+    ],
+    "default_settings": {
+      "plan_first": true,
+      "feedback_loops": true,
+      "max_rework_cycles": 2,
+      "review": {
+        "mode": "adversarial",
+        "skip_trivial": false,
+        "min_files": 1
+      },
+      "hooks": {
+        "taskCompleted": {
+          "cmd": "pnpm",
+          "args": [
+            "test"
+          ],
+          "timeout_ms": 600000
+        }
+      },
+      "require_plan_approval": true
+    }
+  },
+  {
+    "id": "fullstack",
+    "name": "Full Stack",
+    "description": "Maximum parallel team: Architect plans \u2192 Scout + DBA research \u2192 3 Builders + Navigator code \u2192 Sentinel tests \u2192 Inspector reviews \u2192 Scribe documents.",
+    "roles": [
+      {
+        "role": "architect",
+        "handle": "architect",
+        "model": "opus"
+      },
+      {
+        "role": "scout",
+        "handle": "scout",
+        "model": "sonnet"
+      },
+      {
+        "role": "dba",
+        "handle": "dba",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder-1",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder-2",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder-3",
+        "model": "sonnet"
+      },
+      {
+        "role": "navigator",
+        "handle": "navigator",
+        "model": "haiku"
+      },
+      {
+        "role": "inspector",
+        "handle": "inspector",
+        "model": "sonnet"
+      },
+      {
+        "role": "sentinel",
+        "handle": "sentinel",
+        "model": "haiku"
+      },
+      {
+        "role": "scribe",
+        "handle": "scribe",
+        "model": "sonnet"
+      }
+    ],
+    "phases": [
+      {
+        "name": "Research",
+        "roles": [
+          "scout",
+          "dba"
+        ],
+        "description": "Explore codebase and database"
+      },
+      {
+        "name": "Build",
+        "roles": [
+          "builder",
+          "navigator"
+        ],
+        "description": "Implement changes"
+      },
+      {
+        "name": "Verify",
+        "roles": [
+          "sentinel",
+          "inspector"
+        ],
+        "description": "Test and review"
+      },
+      {
+        "name": "Report",
+        "roles": [
+          "scribe"
+        ],
+        "description": "Document everything"
+      }
+    ],
+    "default_settings": {
+      "plan_first": true,
+      "feedback_loops": true,
+      "max_rework_cycles": 2,
+      "review": {
+        "mode": "adversarial"
+      },
+      "hooks": {
+        "taskCompleted": {
+          "cmd": "pnpm",
+          "args": [
+            "test"
+          ],
+          "timeout_ms": 600000
+        }
+      },
+      "require_plan_approval": true
+    }
+  },
+  {
+    "id": "debug",
+    "name": "Debug",
+    "description": "Structured debugging: Scout gathers context \u2192 2 Builders try competing fixes \u2192 Sentinel verifies \u2192 Inspector picks the winner.",
+    "roles": [
+      {
+        "role": "architect",
+        "handle": "architect",
+        "model": "opus"
+      },
+      {
+        "role": "scout",
+        "handle": "scout",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder-1",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder-2",
+        "model": "sonnet"
+      },
+      {
+        "role": "sentinel",
+        "handle": "sentinel",
+        "model": "haiku"
+      },
+      {
+        "role": "inspector",
+        "handle": "inspector",
+        "model": "sonnet"
+      }
+    ],
+    "phases": [
+      {
+        "name": "Investigate",
+        "roles": [
+          "scout"
+        ],
+        "description": "Gather context and reproduce the bug"
+      },
+      {
+        "name": "Fix",
+        "roles": [
+          "builder"
+        ],
+        "description": "Competing fixes in parallel"
+      },
+      {
+        "name": "Verify",
+        "roles": [
+          "sentinel",
+          "inspector"
+        ],
+        "description": "Test fixes, pick the winner"
+      }
+    ],
+    "default_settings": {
+      "plan_first": true,
+      "feedback_loops": true,
+      "max_rework_cycles": 2,
+      "review": {
+        "mode": "standard"
+      },
+      "hooks": {}
+    }
+  },
+  {
+    "id": "audit_then_fix",
+    "name": "Audit Then Fix",
+    "description": "Full audit first, then implement fixes: Scouts + Security + Inspector audit \u2192 Architect plans fixes \u2192 Builders implement \u2192 Tester verifies \u2192 Scribe reports.",
+    "roles": [
+      {
+        "role": "architect",
+        "handle": "architect",
+        "model": "opus"
+      },
+      {
+        "role": "scout",
+        "handle": "scout-code",
+        "model": "sonnet"
+      },
+      {
+        "role": "scout",
+        "handle": "scout-web",
+        "model": "sonnet"
+      },
+      {
+        "role": "security",
+        "handle": "security",
+        "model": "sonnet"
+      },
+      {
+        "role": "inspector",
+        "handle": "inspector",
+        "model": "sonnet"
+      },
+      {
+        "role": "sentinel",
+        "handle": "sentinel",
+        "model": "haiku"
+      },
+      {
+        "role": "builder",
+        "handle": "builder-1",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder-2",
+        "model": "sonnet"
+      },
+      {
+        "role": "tester",
+        "handle": "tester",
+        "model": "sonnet"
+      },
+      {
+        "role": "scribe",
+        "handle": "scribe",
+        "model": "sonnet"
+      }
+    ],
+    "phases": [
+      {
+        "name": "Audit",
+        "roles": [
+          "scout",
+          "security",
+          "inspector",
+          "sentinel"
+        ],
+        "description": "Full codebase audit"
+      },
+      {
+        "name": "Plan",
+        "roles": [
+          "architect"
+        ],
+        "description": "Create fix plan from audit findings"
+      },
+      {
+        "name": "Fix",
+        "roles": [
+          "builder"
+        ],
+        "description": "Implement fixes"
+      },
+      {
+        "name": "Verify",
+        "roles": [
+          "tester",
+          "sentinel"
+        ],
+        "description": "Test all fixes"
+      },
+      {
+        "name": "Report",
+        "roles": [
+          "scribe"
+        ],
+        "description": "Final audit report with fixes applied"
+      }
+    ],
+    "default_settings": {
+      "plan_first": true,
+      "feedback_loops": true,
+      "max_rework_cycles": 2,
+      "review": {
+        "mode": "adversarial",
+        "skip_trivial": false
+      },
+      "hooks": {},
+      "require_plan_approval": true
+    }
+  },
+  {
+    "id": "research_then_build",
+    "name": "Research Then Build",
+    "description": "Deep research first, then implementation: 3 Scouts research \u2192 Scribe compiles report with implementation prompts \u2192 Builders implement \u2192 Sentinel tests.",
+    "roles": [
+      {
+        "role": "architect",
+        "handle": "architect",
+        "model": "opus"
+      },
+      {
+        "role": "scout",
+        "handle": "scout-docs",
+        "model": "sonnet"
+      },
+      {
+        "role": "scout",
+        "handle": "scout-code",
+        "model": "sonnet"
+      },
+      {
+        "role": "scout",
+        "handle": "scout-web",
+        "model": "sonnet"
+      },
+      {
+        "role": "scribe",
+        "handle": "scribe",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder-1",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder-2",
+        "model": "sonnet"
+      },
+      {
+        "role": "sentinel",
+        "handle": "sentinel",
+        "model": "haiku"
+      },
+      {
+        "role": "inspector",
+        "handle": "inspector",
+        "model": "sonnet"
+      }
+    ],
+    "phases": [
+      {
+        "name": "Research",
+        "roles": [
+          "scout"
+        ],
+        "description": "Deep research across docs, code, and web"
+      },
+      {
+        "name": "Synthesize",
+        "roles": [
+          "scribe"
+        ],
+        "description": "Compile research into plan with implementation prompts"
+      },
+      {
+        "name": "Build",
+        "roles": [
+          "builder"
+        ],
+        "description": "Implement from research findings"
+      },
+      {
+        "name": "Verify",
+        "roles": [
+          "sentinel",
+          "inspector"
+        ],
+        "description": "Test and review"
+      }
+    ],
+    "default_settings": {
+      "plan_first": true,
+      "feedback_loops": true,
+      "max_rework_cycles": 2,
+      "review": {
+        "mode": "standard"
+      },
+      "hooks": {},
+      "require_plan_approval": true
+    }
+  },
+  {
+    "id": "security_audit",
+    "name": "Security Audit",
+    "description": "Focused security analysis: Scout maps attack surface \u2192 Security audits auth/RLS/tokens \u2192 Inspector deep-dives high-risk areas \u2192 Sentinel runs checks \u2192 Scribe compiles security report.",
+    "roles": [
+      {
+        "role": "architect",
+        "handle": "architect",
+        "model": "opus"
+      },
+      {
+        "role": "scout",
+        "handle": "scout",
+        "model": "sonnet"
+      },
+      {
+        "role": "security",
+        "handle": "security",
+        "model": "sonnet"
+      },
+      {
+        "role": "inspector",
+        "handle": "inspector",
+        "model": "sonnet"
+      },
+      {
+        "role": "sentinel",
+        "handle": "sentinel",
+        "model": "haiku"
+      },
+      {
+        "role": "scribe",
+        "handle": "scribe",
+        "model": "sonnet"
+      }
+    ],
+    "phases": [
+      {
+        "name": "Recon",
+        "roles": [
+          "scout"
+        ],
+        "description": "Map attack surface, auth flows, data paths"
+      },
+      {
+        "name": "Audit",
+        "roles": [
+          "security",
+          "inspector"
+        ],
+        "description": "Deep security analysis + Codex review"
+      },
+      {
+        "name": "Verify",
+        "roles": [
+          "sentinel"
+        ],
+        "description": "Run security-related tests"
+      },
+      {
+        "name": "Report",
+        "roles": [
+          "scribe"
+        ],
+        "description": "Security audit report with severity ratings"
+      }
+    ],
+    "default_settings": {
+      "plan_first": true,
+      "review": {
+        "mode": "adversarial",
+        "skip_trivial": false
+      },
+      "hooks": {},
+      "require_plan_approval": true
+    }
+  },
+  {
+    "id": "performance_audit",
+    "name": "Performance Audit",
+    "description": "Performance analysis: Scout maps hot paths \u2192 PerfAnalyst measures bottlenecks \u2192 Builder optimizes \u2192 Sentinel benchmarks \u2192 Scribe reports.",
+    "roles": [
+      {
+        "role": "architect",
+        "handle": "architect",
+        "model": "opus"
+      },
+      {
+        "role": "scout",
+        "handle": "scout",
+        "model": "sonnet"
+      },
+      {
+        "role": "perfanalyst",
+        "handle": "perfanalyst",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder",
+        "model": "sonnet"
+      },
+      {
+        "role": "sentinel",
+        "handle": "sentinel",
+        "model": "haiku"
+      },
+      {
+        "role": "scribe",
+        "handle": "scribe",
+        "model": "sonnet"
+      }
+    ],
+    "phases": [
+      {
+        "name": "Profile",
+        "roles": [
+          "scout",
+          "perfanalyst"
+        ],
+        "description": "Map hot paths and measure bottlenecks"
+      },
+      {
+        "name": "Optimize",
+        "roles": [
+          "builder"
+        ],
+        "description": "Implement performance fixes"
+      },
+      {
+        "name": "Benchmark",
+        "roles": [
+          "sentinel"
+        ],
+        "description": "Re-measure to verify improvements"
+      },
+      {
+        "name": "Report",
+        "roles": [
+          "scribe"
+        ],
+        "description": "Performance report with before/after metrics"
+      }
+    ],
+    "default_settings": {
+      "plan_first": true,
+      "feedback_loops": true,
+      "max_rework_cycles": 2,
+      "review": {
+        "mode": "standard"
+      },
+      "hooks": {}
+    }
+  },
+  {
+    "id": "api_design",
+    "name": "API Design",
+    "description": "API-first development: Scout researches patterns \u2192 API Designer creates specs \u2192 Builder implements \u2192 Tester writes API tests \u2192 Inspector reviews.",
+    "roles": [
+      {
+        "role": "architect",
+        "handle": "architect",
+        "model": "opus"
+      },
+      {
+        "role": "scout",
+        "handle": "scout",
+        "model": "sonnet"
+      },
+      {
+        "role": "apidesigner",
+        "handle": "apidesigner",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder",
+        "model": "sonnet"
+      },
+      {
+        "role": "tester",
+        "handle": "tester",
+        "model": "sonnet"
+      },
+      {
+        "role": "inspector",
+        "handle": "inspector",
+        "model": "sonnet"
+      },
+      {
+        "role": "scribe",
+        "handle": "scribe",
+        "model": "sonnet"
+      }
+    ],
+    "phases": [
+      {
+        "name": "Research",
+        "roles": [
+          "scout"
+        ],
+        "description": "Analyze existing API patterns"
+      },
+      {
+        "name": "Design",
+        "roles": [
+          "apidesigner"
+        ],
+        "description": "Create API specs and schemas"
+      },
+      {
+        "name": "Build",
+        "roles": [
+          "builder"
+        ],
+        "description": "Implement endpoints"
+      },
+      {
+        "name": "Test",
+        "roles": [
+          "tester",
+          "inspector"
+        ],
+        "description": "Write API tests and review"
+      },
+      {
+        "name": "Report",
+        "roles": [
+          "scribe"
+        ],
+        "description": "API documentation"
+      }
+    ],
+    "default_settings": {
+      "plan_first": true,
+      "feedback_loops": true,
+      "max_rework_cycles": 2,
+      "review": {
+        "mode": "adversarial"
+      },
+      "hooks": {},
+      "require_plan_approval": true
+    }
+  },
+  {
+    "id": "migration",
+    "name": "Migration",
+    "description": "Code migration / upgrade: Scout researches breaking changes \u2192 Navigator updates deps \u2192 DBA handles schema \u2192 2 Builders migrate code \u2192 Sentinel tests \u2192 Inspector validates.",
+    "roles": [
+      {
+        "role": "architect",
+        "handle": "architect",
+        "model": "opus"
+      },
+      {
+        "role": "scout",
+        "handle": "scout",
+        "model": "sonnet"
+      },
+      {
+        "role": "navigator",
+        "handle": "navigator",
+        "model": "haiku"
+      },
+      {
+        "role": "dba",
+        "handle": "dba",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder-1",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder-2",
+        "model": "sonnet"
+      },
+      {
+        "role": "inspector",
+        "handle": "inspector",
+        "model": "sonnet"
+      },
+      {
+        "role": "sentinel",
+        "handle": "sentinel",
+        "model": "haiku"
+      },
+      {
+        "role": "scribe",
+        "handle": "scribe",
+        "model": "sonnet"
+      }
+    ],
+    "phases": [
+      {
+        "name": "Research",
+        "roles": [
+          "scout"
+        ],
+        "description": "Research breaking changes and migration path"
+      },
+      {
+        "name": "Prepare",
+        "roles": [
+          "navigator",
+          "dba"
+        ],
+        "description": "Update deps and prepare schema migration"
+      },
+      {
+        "name": "Migrate",
+        "roles": [
+          "builder"
+        ],
+        "description": "Execute code migration"
+      },
+      {
+        "name": "Verify",
+        "roles": [
+          "sentinel",
+          "inspector"
+        ],
+        "description": "Test and validate migration"
+      },
+      {
+        "name": "Report",
+        "roles": [
+          "scribe"
+        ],
+        "description": "Migration report and changelog"
+      }
+    ],
+    "default_settings": {
+      "plan_first": true,
+      "feedback_loops": true,
+      "max_rework_cycles": 2,
+      "review": {
+        "mode": "adversarial"
+      },
+      "hooks": {
+        "taskCompleted": {
+          "cmd": "pnpm",
+          "args": [
+            "test"
+          ],
+          "timeout_ms": 600000
+        }
+      },
+      "require_plan_approval": true
+    }
+  },
+  {
+    "id": "ui_review",
+    "name": "UI Review",
+    "description": "UI/UX analysis: Scout maps screens \u2192 UX Reviewer audits accessibility/consistency \u2192 Inspector reviews component code \u2192 Builder fixes issues \u2192 Scribe reports.",
+    "roles": [
+      {
+        "role": "architect",
+        "handle": "architect",
+        "model": "opus"
+      },
+      {
+        "role": "scout",
+        "handle": "scout",
+        "model": "sonnet"
+      },
+      {
+        "role": "uxreviewer",
+        "handle": "uxreviewer",
+        "model": "sonnet"
+      },
+      {
+        "role": "inspector",
+        "handle": "inspector",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder",
+        "model": "sonnet"
+      },
+      {
+        "role": "scribe",
+        "handle": "scribe",
+        "model": "sonnet"
+      }
+    ],
+    "phases": [
+      {
+        "name": "Map",
+        "roles": [
+          "scout"
+        ],
+        "description": "Map all screens and components"
+      },
+      {
+        "name": "Review",
+        "roles": [
+          "uxreviewer",
+          "inspector"
+        ],
+        "description": "UX audit and code review"
+      },
+      {
+        "name": "Fix",
+        "roles": [
+          "builder"
+        ],
+        "description": "Implement UX fixes"
+      },
+      {
+        "name": "Report",
+        "roles": [
+          "scribe"
+        ],
+        "description": "UX audit report"
+      }
+    ],
+    "default_settings": {
+      "plan_first": true,
+      "review": {
+        "mode": "standard"
+      },
+      "hooks": {}
+    }
+  },
+  {
+    "id": "refactor",
+    "name": "Refactor",
+    "description": "Large-scale refactoring: Scout maps patterns \u2192 Refactorer extracts/restructures \u2192 2 Builders update consumers \u2192 Sentinel tests \u2192 Inspector validates \u2192 Scribe documents.",
+    "roles": [
+      {
+        "role": "architect",
+        "handle": "architect",
+        "model": "opus"
+      },
+      {
+        "role": "scout",
+        "handle": "scout",
+        "model": "sonnet"
+      },
+      {
+        "role": "refactorer",
+        "handle": "refactorer",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder-1",
+        "model": "sonnet"
+      },
+      {
+        "role": "builder",
+        "handle": "builder-2",
+        "model": "sonnet"
+      },
+      {
+        "role": "inspector",
+        "handle": "inspector",
+        "model": "sonnet"
+      },
+      {
+        "role": "sentinel",
+        "handle": "sentinel",
+        "model": "haiku"
+      },
+      {
+        "role": "scribe",
+        "handle": "scribe",
+        "model": "sonnet"
+      }
+    ],
+    "phases": [
+      {
+        "name": "Analyze",
+        "roles": [
+          "scout"
+        ],
+        "description": "Map patterns, duplication, and dependencies"
+      },
+      {
+        "name": "Refactor",
+        "roles": [
+          "refactorer",
+          "builder"
+        ],
+        "description": "Extract patterns, update consumers"
+      },
+      {
+        "name": "Verify",
+        "roles": [
+          "sentinel",
+          "inspector"
+        ],
+        "description": "Test and validate no behavior changes"
+      },
+      {
+        "name": "Report",
+        "roles": [
+          "scribe"
+        ],
+        "description": "Document new patterns and architecture"
+      }
+    ],
+    "default_settings": {
+      "plan_first": true,
+      "feedback_loops": true,
+      "max_rework_cycles": 2,
+      "review": {
+        "mode": "adversarial"
+      },
+      "hooks": {
+        "taskCompleted": {
+          "cmd": "pnpm",
+          "args": [
+            "test"
+          ],
+          "timeout_ms": 600000
+        }
+      },
+      "require_plan_approval": true
+    }
+  },
+  {
+    "id": "code_review",
+    "name": "Code Review",
+    "description": "Deep codebase analysis: 2 Scouts crawl architecture and patterns \u2192 Inspector runs adversarial review with Codex \u2192 Sentinel checks tests/lint \u2192 Scribe compiles final report.",
+    "roles": [
+      {
+        "role": "architect",
+        "handle": "architect",
+        "model": "opus"
+      },
+      {
+        "role": "scout",
+        "handle": "scout-structure",
+        "model": "sonnet"
+      },
+      {
+        "role": "scout",
+        "handle": "scout-patterns",
+        "model": "sonnet"
+      },
+      {
+        "role": "inspector",
+        "handle": "inspector",
+        "model": "sonnet"
+      },
+      {
+        "role": "sentinel",
+        "handle": "sentinel",
+        "model": "haiku"
+      },
+      {
+        "role": "scribe",
+        "handle": "scribe",
+        "model": "sonnet"
+      }
+    ],
+    "phases": [
+      {
+        "name": "Research",
+        "roles": [
+          "scout"
+        ],
+        "description": "Explore codebase architecture and patterns"
+      },
+      {
+        "name": "Analysis",
+        "roles": [
+          "inspector",
+          "sentinel"
+        ],
+        "description": "Deep review with Codex + run checks"
+      },
+      {
+        "name": "Report",
+        "roles": [
+          "scribe"
+        ],
+        "description": "Compile final review report"
+      }
+    ],
+    "default_settings": {
+      "plan_first": true,
+      "feedback_loops": false,
+      "review": {
+        "mode": "adversarial",
+        "skip_trivial": false
+      },
+      "hooks": {},
+      "require_plan_approval": true
+    }
+  }
+]

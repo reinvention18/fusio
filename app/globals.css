@@ -1,0 +1,1635 @@
+/* Fonts are loaded via next/font in app/layout.tsx (zero-CLS, self-hosted).
+   The CSS vars they expose (--font-display, --font-sans, --font-mono) are
+   referenced from the theme blocks below. */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   THEME SYSTEM - 4 Unique Themes
+   ============================================ */
+
+/* Theme 1 (Default) — AI FUSIO palette.
+   Maps the existing terminal-* Tailwind tokens to Fusio brand values so
+   every existing component (ChatPanel, composer, panels, modals) re-skins
+   without per-component changes. The actual Fusio design CSS at
+   /fusio/mc.css owns the new shell chrome (.sidebar, .topbar, .sessions,
+   .chat-head, .composer); these vars keep the older Tailwind components
+   visually aligned. */
+:root, [data-theme="terminal"] {
+  --bg-primary: #050507;        /* --void */
+  --bg-surface: #0A0A0E;        /* --ink */
+  --bg-elevated: #131319;       /* --ink-2 */
+  --border: rgba(255,255,255,0.08);     /* --line */
+  --border-bright: rgba(255,255,255,0.16); /* --line-3 */
+
+  --accent-primary: #CC0C20;    /* --red (Signal Red — replaces terminal green everywhere) */
+  --accent-secondary: #5EC4D9;  /* --cyan */
+  --accent-tertiary: #E8A23B;   /* --amber */
+
+  --text-primary: #FFFFFF;      /* --white */
+  --text-secondary: rgba(255,255,255,0.78); /* --fog */
+  --text-dim: rgba(255,255,255,0.5);        /* --mist */
+
+  --success: #4CC38A;           /* --green */
+  --warning: #E8A23B;           /* --amber */
+  --error: #CC0C20;             /* --red */
+  --info: #5EC4D9;              /* --cyan */
+
+  --glow-primary: rgba(204,12,32,0.55);    /* --red-glow */
+  --glow-secondary: rgba(94,196,217,0.35);
+
+  --font-primary: 'Inter Tight', 'Inter', system-ui, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter Tight', system-ui, sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+/* Theme 2: Midnight Aurora - Deep space with aurora accents */
+[data-theme="aurora"] {
+  --bg-primary: #0f0f1a;
+  --bg-surface: #161625;
+  --bg-elevated: #1e1e32;
+  --border: #2a2a45;
+  --border-bright: #3d3d5c;
+  
+  --accent-primary: #a855f7;
+  --accent-secondary: #06b6d4;
+  --accent-tertiary: #f472b6;
+  
+  --text-primary: #e8e8f0;
+  --text-secondary: #9090a8;
+  --text-dim: #5c5c78;
+  
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --error: #f87171;
+  --info: #38bdf8;
+  
+  --glow-primary: rgba(168, 85, 247, 0.35);
+  --glow-secondary: rgba(6, 182, 212, 0.35);
+  
+  --font-primary: 'Space Grotesk', sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+}
+
+/* Theme 3: Ember Command - Warm command center */
+[data-theme="ember"] {
+  --bg-primary: #0d0907;
+  --bg-surface: #161210;
+  --bg-elevated: #211a16;
+  --border: #2f2520;
+  --border-bright: #3d322a;
+  
+  --accent-primary: #f97316;
+  --accent-secondary: #eab308;
+  --accent-tertiary: #ef4444;
+  
+  --text-primary: #f5e6d3;
+  --text-secondary: #a89888;
+  --text-dim: #665544;
+  
+  --success: #84cc16;
+  --warning: #eab308;
+  --error: #ef4444;
+  --info: #f97316;
+  
+  --glow-primary: rgba(249, 115, 22, 0.35);
+  --glow-secondary: rgba(234, 179, 8, 0.35);
+  
+  --font-primary: 'JetBrains Mono', monospace;
+  --font-display: 'Inter', sans-serif;
+  
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+/* Theme 4: Frost Glass - Light glassmorphism */
+[data-theme="frost"] {
+  --bg-primary: #f0f4f8;
+  --bg-surface: rgba(255, 255, 255, 0.7);
+  --bg-elevated: rgba(255, 255, 255, 0.9);
+  --border: rgba(148, 163, 184, 0.3);
+  --border-bright: rgba(100, 116, 139, 0.4);
+  
+  --accent-primary: #0ea5e9;
+  --accent-secondary: #6366f1;
+  --accent-tertiary: #8b5cf6;
+  
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-dim: #94a3b8;
+  
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #0ea5e9;
+  
+  --glow-primary: rgba(14, 165, 233, 0.25);
+  --glow-secondary: rgba(99, 102, 241, 0.25);
+  
+  --font-primary: 'Inter', sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Frost theme special background */
+[data-theme="frost"] body {
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0f4f8 50%, #e0f2fe 100%);
+  background-attachment: fixed;
+}
+
+/* Aurora theme subtle gradient */
+[data-theme="aurora"] body {
+  background: linear-gradient(180deg, #0f0f1a 0%, #151528 50%, #0f0f1a 100%);
+  background-attachment: fixed;
+}
+
+/* Ember theme warm gradient */
+[data-theme="ember"] body {
+  background: radial-gradient(ellipse at top, #1a1210 0%, #0d0907 100%);
+  background-attachment: fixed;
+}
+
+/* ============================================
+   SCROLLBAR STYLES (Theme-aware)
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-bright);
+  border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
+}
+
+/* Hide scrollbar for tabs on mobile */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================
+   MOBILE / PWA IMPROVEMENTS
+   ============================================ */
+
+/* Safe area support for standalone PWA mode (notch, nav gestures) */
+@supports (padding: env(safe-area-inset-top)) {
+  .min-h-screen {
+    min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 768px) {
+  button, a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Prevent iOS zoom on input focus */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+
+  /* Bump base font sizes for mobile readability */
+  body {
+    font-size: 16px;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Panel headers — bigger on mobile */
+  h2, h3 {
+    font-size: 1rem !important;
+  }
+
+  /* Larger scrollbars for touch */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* Standalone PWA mode — add top padding for status bar */
+@media (display-mode: standalone) {
+  header {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}
+
+/* Pull-to-refresh prevention in standalone mode */
+@media (display-mode: standalone) {
+  html {
+    overscroll-behavior-y: contain;
+  }
+}
+
+/* ============================================
+   GLOW EFFECTS (Theme-aware)
+   ============================================ */
+
+.glow-primary {
+  box-shadow: 0 0 20px var(--glow-primary);
+}
+
+.glow-secondary {
+  box-shadow: 0 0 20px var(--glow-secondary);
+}
+
+/* Legacy glow classes for compatibility */
+.glow-green {
+  box-shadow: 0 0 10px var(--glow-primary);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 10px var(--glow-secondary);
+}
+
+.glow-amber {
+  box-shadow: 0 0 10px rgba(255, 176, 0, 0.3);
+}
+
+/* ============================================
+   SPECIAL EFFECTS
+   ============================================ */
+
+/* Terminal cursor */
+.cursor-blink::after {
+  content: "█";
+  color: var(--accent-primary);
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Scanline effect (Terminal theme only) */
+[data-theme="terminal"] .scanlines::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Aurora shimmer effect */
+[data-theme="aurora"] .shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--accent-primary) 0%,
+    var(--accent-secondary) 50%,
+    var(--accent-tertiary) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Ember flicker effect */
+[data-theme="ember"] .flicker {
+  animation: flicker 2s ease-in-out infinite;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+  75% { opacity: 0.95; }
+}
+
+/* Slow spin for auto-refresh indicators */
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Frost glass effect */
+[data-theme="frost"] .glass {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================
+   THEME-SPECIFIC COMPONENT OVERRIDES
+   ============================================ */
+
+/* Frost theme needs inverted loading spinner */
+[data-theme="frost"] .text-terminal-green {
+  color: var(--accent-primary) !important;
+}
+
+/* Aurora gradient borders */
+[data-theme="aurora"] .gradient-border {
+  position: relative;
+}
+
+[data-theme="aurora"] .gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary));
+  border-radius: inherit;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* ============================================
+   THEME PREVIEW CARDS
+   ============================================ */
+
+.theme-preview {
+  width: 100%;
+  height: 60px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.theme-preview:hover {
+  transform: scale(1.02);
+}
+
+.theme-preview.active {
+  box-shadow: 0 0 0 2px var(--accent-primary);
+}
+
+.theme-preview-terminal {
+  background: linear-gradient(135deg, #0a0a0a 0%, #111111 100%);
+}
+
+.theme-preview-terminal::after {
+  content: ">";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #00ff41;
+  font-family: monospace;
+  font-size: 20px;
+}
+
+.theme-preview-aurora {
+  background: linear-gradient(135deg, #0f0f1a 0%, #1e1e32 50%, #2a1e3d 100%);
+}
+
+.theme-preview-aurora::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, 
+    transparent 30%, 
+    rgba(168, 85, 247, 0.3) 50%, 
+    rgba(6, 182, 212, 0.2) 70%, 
+    transparent 80%
+  );
+}
+
+.theme-preview-ember {
+  background: linear-gradient(135deg, #0d0907 0%, #1a1210 50%, #251810 100%);
+}
+
+.theme-preview-ember::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: linear-gradient(to top, rgba(249, 115, 22, 0.4), transparent);
+}
+
+.theme-preview-frost {
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0f4f8 50%, #e0f2fe 100%);
+}
+
+.theme-preview-frost::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}
+
+/* ============================================
+   DENSITY
+   Controls message bubble padding + gaps.
+   Applied via <html data-density="cozy|compact|minimal">.
+   ============================================ */
+:root, [data-density="cozy"]   { --msg-gap: 1rem;   --msg-pad-y: 0.75rem; --msg-pad-x: 1rem; }
+[data-density="compact"]       { --msg-gap: 0.5rem; --msg-pad-y: 0.5rem;  --msg-pad-x: 0.75rem; }
+[data-density="minimal"]       { --msg-gap: 0.25rem; --msg-pad-y: 0.25rem; --msg-pad-x: 0.5rem; }
+
+[data-density="compact"] .group.flex.mb-4 { margin-bottom: var(--msg-gap) !important; }
+[data-density="minimal"] .group.flex.mb-4 { margin-bottom: var(--msg-gap) !important; }
+[data-density="compact"] .rounded-2xl.md\:rounded-lg,
+[data-density="minimal"] .rounded-2xl.md\:rounded-lg {
+  padding-top: var(--msg-pad-y);
+  padding-bottom: var(--msg-pad-y);
+  padding-left: var(--msg-pad-x);
+  padding-right: var(--msg-pad-x);
+}
+
+/* ============================================
+   STREAMING CURSOR
+   Thin caret that reads like a normal text cursor,
+   replacing the old 2×16 pulsing block.
+   ============================================ */
+@keyframes mc-caret-blink {
+  0%, 45%   { opacity: 1; }
+  55%, 100% { opacity: 0; }
+}
+.mc-stream-caret {
+  display: inline-block;
+  width: 1px;
+  height: 1em;
+  margin-left: 2px;
+  background: currentColor;
+  vertical-align: text-bottom;
+  animation: mc-caret-blink 1s steps(1, end) infinite;
+}
+
+/* Fusio toast slide-in (used by components/notifications/NotificationToasts.tsx) */
+@keyframes fusio-toast-in {
+  from { transform: translateX(24px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* Generic spin keyframes for inline-style loaders (Tailwind's .animate-spin
+   already includes its own keyframes, but inline `animation: spin …` needs the
+   plain @keyframes definition.) */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Fusio pulse — soft scale + glow for live status dots */
+@keyframes fusio-pulse {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(1.15); }
+}
+
+/* Fusio panel chrome — outer wrapper for admin panels + sub-modals.
+   Replaces the legacy `bg-terminal-surface border border-terminal-border
+   rounded-lg` combo (which the Phase 22 polish layer used to rewrite to
+   these same values; this makes the source explicit instead of relying
+   on the polish layer to fix it at render time). */
+.fusio-panel {
+  background: var(--ink, #0A0A0E);
+  border: 1px solid var(--line, rgba(255,255,255,0.08));
+  border-radius: 12px;
+}
+
+/* Mobile-only widgets — hidden on desktop, flipped to display in the
+   mobile @media block below. */
+.chats-mobile-only { display: none; }
+
+/* ============================================
+   CHAT-MESSAGE ZOOM — driven by ChatZoomController
+   ============================================
+   The controller sets `--mc-chat-zoom` on :root (default 1.0). Selectors
+   below scale message body text inside the chat surface. We scope tightly
+   so the chat header, composer, and sidebars stay at their fixed sizes. */
+:root { --mc-chat-zoom: 1; }
+
+/* Allow pinch-zoom on the chat surface — ChatZoomController owns the
+   custom two-finger gesture (which preventDefault's the native one),
+   but we still want `touch-action` to NOT swallow it. */
+.fusio-main { touch-action: pan-x pan-y pinch-zoom; }
+
+/* Message text / paragraphs / lists inside ChatPanel's Virtuoso list. */
+.fusio-main [class*="overflow-y-auto"] [class*="prose"],
+.fusio-main [class*="overflow-y-auto"] p,
+.fusio-main [class*="overflow-y-auto"] li,
+.fusio-main [class*="overflow-y-auto"] [class*="text-sm"] {
+  font-size: calc(14px * var(--mc-chat-zoom)) !important;
+  line-height: calc(1.55 * var(--mc-chat-zoom));
+}
+/* Code blocks scale a touch less aggressively. */
+.fusio-main [class*="overflow-y-auto"] pre,
+.fusio-main [class*="overflow-y-auto"] code {
+  font-size: calc(12.5px * var(--mc-chat-zoom)) !important;
+}
+/* Inline message titles (sender, timestamp) — scale too so the row feels
+   coherent at every zoom level. */
+.fusio-main .msg .head,
+.fusio-main .msg .body { font-size: calc(13px * var(--mc-chat-zoom)); }
+
+/* ============================================
+   MOBILE RESPONSIVE — Fusio design adapted for ≤767px
+   ============================================
+   The design assumes desktop. This block reshapes the desktop chrome
+   (topbar, chat-head, composer, sidebar/sessions/right-rail) to a
+   one-column mobile layout while preserving the look-and-feel.
+
+   Strategy:
+   - Hide the 3 side columns; main takes full width
+   - Topbar: drop traffic lights, keep brand + breadcrumb, hide
+     "Calls today" / Connected text / Settings label
+   - Chat head: stack title row + chips, hide non-essential pills
+   - Composer: keep textarea + send + stop, hide keyboard hints
+   - Tighter padding / smaller radii / safe-area bottom inset
+*/
+@media (max-width: 767px) {
+  /* --- Shell grid: 1 column, no right rail ---
+     CRITICAL: use `minmax(0, 1fr)` not `1fr`. Plain `1fr` resolves to
+     max(min-content, 1fr) — meaning the grid track grows to whatever
+     unbreakable content lives inside (e.g. a long workspace path in the
+     topbar). With body { overflow: hidden } that overflow gets clipped
+     and only the topbar is visible. minmax(0, …) caps the lower bound
+     at 0 so the track stays inside the viewport. */
+  .shell,
+  .shell.no-sessions,
+  .shell.collapsed {
+    grid-template-columns: minmax(0, 1fr) !important;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  /* Belt-and-suspenders: every direct grid child needs min-width: 0 so
+     it can shrink below its intrinsic content width. */
+  .shell > * { min-width: 0; }
+
+  /* Long unbreakable strings (file paths in topbar) — force wrapping. */
+  .topbar-center .group { overflow: hidden; }
+  .topbar-center .group span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    display: inline-block;
+  }
+  .shell > .sidebar,
+  .shell > .sessions,
+  .shell > .right-rail {
+    display: none !important;
+  }
+  /* Critical: design pins .main to grid-column: 3 (or 2 with .no-sessions).
+     On a 1-col mobile grid that column doesn't exist → main is invisible.
+     Force it back to column 1. */
+  .shell .main,
+  .shell.no-sessions .main {
+    grid-column: 1 !important;
+  }
+
+  /* --- Topbar: ruthlessly minimal on mobile.
+         Layout: [hamburger] FUSIO · [tab name] ........ [●][⚙]
+         Hidden: traffic dots, workspace path, calls today, UTC clock,
+                 vault badge, all separators. --- */
+  .topbar {
+    padding: 0 8px 0 56px !important;  /* 56px = 6px gap + 44px hamburger + 6px breathing room */
+    gap: 6px;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .topbar-left, .topbar-center, .topbar-right { min-width: 0; }
+  .topbar-right {
+    flex-shrink: 1;
+    overflow: hidden;
+    gap: 6px;
+  }
+  .topbar .traffic { display: none !important; }
+
+  /* Center: keep ONLY the breadcrumb (tab name). Workspace path drops —
+     it's redundant with what's selected, and it's the longest string. */
+  .topbar-center {
+    justify-content: flex-start;
+    overflow: hidden;
+    flex: 1;
+    min-width: 0;
+    gap: 6px;
+  }
+  .topbar-center .group {
+    min-width: 0;
+    overflow: hidden;
+  }
+  /* The second group in topbar-center is always the workspace path
+     (cyan, longest string). Hide it on mobile. */
+  .topbar-center .group + .group { display: none !important; }
+  .topbar-center .sep { display: none; }
+  .topbar-center .group span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    display: inline-block;
+  }
+
+  /* Right: keep only the connected blip + Settings gear (icon-only).
+     Hide Calls today / Clock / all seps. Connected → blip only. */
+  .topbar-right [data-tb="calls"],
+  .topbar-right [data-tb="clock"],
+  .topbar-right [data-tb="sep"] {
+    display: none !important;
+  }
+  .topbar-right [data-tb="connected"] > span:not(.blip):not(.red-blip) {
+    display: none !important;
+  }
+  /* MemVault badge — hide on mobile (vault status is reachable from menu). */
+  .topbar-right .memvault-status-badge,
+  .topbar-right [class*="MemVault"] {
+    display: none !important;
+  }
+  /* Settings pill → icon only, tight padding. */
+  .topbar-right [data-tb="settings"] { padding: 6px 8px; }
+  .topbar-right [data-tb="settings"] > span:not(.blip):not(.red-blip) {
+    display: none !important;
+  }
+  /* (Old duplicate topbar-right / topbar-center :last-child rules
+     removed — superseded by the ruthlessly-minimal block above.) */
+
+  /* --- Chat header: ONE compact row. Show only title + Chats + Project
+         + Tools. Hide LIVE, Notepad, stat-chips entirely so the chat
+         messages area extends higher. --- */
+  .chat-head {
+    padding: 8px 10px !important;
+    gap: 6px !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+  }
+  .chat-head .title { flex: 0 1 auto; min-width: 0; overflow: hidden; }
+  .chat-head .title .name { font-size: 14px; }
+  .chat-head .title .sub { display: none; }
+  .chat-head .title .ic { width: 26px; height: 26px; }
+  .chat-head .head-actions { flex-wrap: nowrap !important; gap: 4px; margin-left: auto; }
+  .chat-head .pill {
+    padding: 5px 9px !important;
+    font-size: 10px !important;
+    letter-spacing: 0.06em !important;
+  }
+  /* Hide non-essential pills on mobile — Live, Notepad, stat-chips row */
+  .chat-head .pill.live { display: none !important; }
+  .chat-head .pill.notepad { display: none !important; }
+  .chat-head .stat-chips { display: none !important; }
+  /* Tighten the icon-pill content — text labels OK on the kept pills */
+  .chat-head .pill span:not(.sr-only) {
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* --- Composer: tighter, no kbd hints, safe-area bottom --- */
+  .strip {
+    padding: 0 12px;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .strip::-webkit-scrollbar { display: none; }
+  .strip .item { flex-shrink: 0; font-size: 10px; padding: 5px 9px; }
+
+  .composer-wrap {
+    /* Tighter to the bottom edge — only the safe-area inset, no extra
+       padding. User explicitly asked to move the input box down. */
+    padding: 6px 8px env(safe-area-inset-bottom, 0px) !important;
+    max-width: 100%;
+  }
+  .composer { border-radius: 14px; }
+  .composer textarea {
+    padding: 10px 12px 4px;
+    font-size: 16px;  /* prevents iOS zoom on focus */
+    min-height: 40px;
+  }
+  .composer-bar {
+    padding: 2px 6px 6px;
+    gap: 4px;
+  }
+  .composer-bar button.ico { width: 32px; height: 32px; }
+  .composer-bar .send,
+  .composer-bar .stop {
+    padding: 7px 14px;
+    font-size: 11px;
+  }
+  /* Hide the model selector label, keep its icon-pill */
+  .composer-bar .model-pill .label { display: none; }
+  /* Hide the keyboard-hint row entirely on mobile (user explicitly
+     asked for this — "remove the text under the chat input box"). */
+  .composer-meta { display: none !important; }
+  /* Also kill the strip above (Undo / Diagnose quick actions) — these
+     are not essential and add visual noise that pushes the composer up. */
+  .strip { display: none !important; }
+
+  /* --- Main column padding for non-chat tabs --- */
+  .fusio-scroll-pad { padding: 12px 12px 24px; }
+  .fusio-main .grid { gap: 12px !important; }
+
+  /* --- In-message cards: tighten paddings, full-width buttons --- */
+  .fusio-main .card {
+    border-radius: 10px;
+  }
+  .fusio-main .card .card-head { padding: 10px 12px; }
+  .fusio-main .card .card-body { padding: 10px 12px; }
+  .fusio-main .card .card-actions {
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    gap: 6px;
+  }
+  .fusio-main .card .card-actions .card-btn {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: center;
+    justify-content: center;
+  }
+
+  /* --- Message wrapper: drop the 32px desktop side padding --- */
+  .shell .fusio-main [class*="bg-terminal-surface"] [class*="overflow-y-auto"] > div > div {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  /* --- Settings modal: full-screen on mobile --- */
+  .modal-bg .modal {
+    width: calc(100vw - 16px);
+    max-width: 100%;
+    max-height: calc(100vh - 32px);
+    margin: 8px;
+    border-radius: 12px;
+  }
+  .modal-head { padding: 14px 16px; }
+  .modal-body { padding: 14px 16px; }
+  .modal-foot { padding: 12px 16px; flex-direction: column-reverse; gap: 8px; }
+  .modal-foot button { width: 100%; }
+  .theme-grid { grid-template-columns: 1fr 1fr !important; gap: 8px; }
+  .theme-card { padding: 10px; }
+  .theme-card .swatch { height: 36px; }
+
+  /* --- Dashboard: collapse + force inner grids to fit 375px ---
+     Design's .dash-grid collapses to 1fr at 800px, but its CHILDREN
+     (.dash-col, .dash-card, .health-grid) have unbreakable content
+     (numbers, paths, code snippets) that auto-size their tracks.
+     Apply minmax(0, …) + min-width: 0 cascade so they shrink. */
+  .dash-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    padding: 12px !important;
+    gap: 12px !important;
+  }
+  .dash-col, .dash-card { min-width: 0; }
+  .dash-card { padding: 0 !important; }
+  .dash-card .dh { padding: 10px 12px; min-width: 0; flex-wrap: wrap; gap: 6px; }
+  .dash-card .dh h4 { font-size: 12px; min-width: 0; }
+  .dash-card .db { padding: 10px 12px; min-width: 0; word-break: break-word; }
+  .health-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 6px;
+  }
+  .health-grid > * { min-width: 0; word-break: break-word; }
+  .chat-history, .cron-row, .quick-links { min-width: 0; }
+  .chat-history > *, .cron-row > *, .quick-links > * {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* --- Right rail drawer — disabled on mobile (it's hidden above),
+         but if any tab opens it programmatically, full-screen overlay. --- */
+  .right-rail.open {
+    position: fixed !important;
+    inset: var(--topbar-h) 0 0 0 !important;
+    width: 100% !important;
+    z-index: 90;
+  }
+
+  /* --- Tools panel: full-width dropdown --- */
+  .tools-panel {
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+
+  /* --- Hamburger button breathing room (button itself is in page.tsx) --- */
+  /* Reserved by `padding-left: 44px` on .topbar above */
+
+  /* --- Mobile Chats button in chat header: always visible on mobile.
+         (Already display:none by default below.) --- */
+  .chats-mobile-only {
+    display: inline-flex !important;
+  }
+
+  /* --- Mobile drawer: force the sidebar inside it to fill the panel.
+         The .sidebar component has `grid-column: 1; grid-row: 2;` from
+         the design CSS, which is meaningless inside a flex container —
+         override to take the full drawer panel width + height. --- */
+  .fusio-mobile-drawer .fusio-mobile-drawer-panel .sidebar {
+    grid-column: auto !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column;
+    border-right: 0;
+  }
+  /* And the nav list inside should scroll if it overflows */
+  .fusio-mobile-drawer .sidebar-section {
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+/* Very narrow phones (≤380px): squeeze a touch more */
+@media (max-width: 380px) {
+  .topbar-center .group:first-child { display: none; }  /* drop breadcrumb */
+  .chat-head .title .name { font-size: 14px; }
+  .composer-bar button.ico { width: 30px; height: 30px; }
+}
+
+/* ============================================
+   MOBILE — Phase 64 polish (full audit follow-up)
+   ============================================ */
+@media (max-width: 767px) {
+  /* --- Chip strip: wrap to 2 rows instead of horizontal scroll.
+         Easier to discover than scroll, no clipping. --- */
+  .chat-head .stat-chips {
+    flex-wrap: wrap !important;
+    overflow: visible !important;
+  }
+  .chat-head .stat-chips .chip {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  /* --- Notification toast banner: always push above where the chat
+         composer would sit so it never covers chat input. The composer
+         (when present) is ~200px tall on mobile; bumping the banner
+         220px from the bottom clears it. On non-chat tabs the banner
+         just appears mid-lower screen — still acceptable. --- */
+  .notif-toasts {
+    right: 8px !important;
+    left: 8px !important;
+    bottom: calc(220px + env(safe-area-inset-bottom, 0px)) !important;
+    max-width: none !important;
+  }
+
+  /* --- Activity / panel desktop-width overrides: anything with
+         md:w-[NNNpx] forces a fixed width and ignores mobile. Strip
+         all fixed-px widths in main content on mobile. --- */
+  .fusio-main [class*="md:w-["],
+  .fusio-main [class*="lg:w-["] {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* --- Hamburger touch target: bump to 44x44 minimum (Apple HIG) --- */
+@media (max-width: 767px) {
+  button[aria-label="Open menu"] {
+    width: 44px !important;
+    height: 44px !important;
+  }
+}
+
+/* Scroll wrapper for non-chat / non-dashboard tabs that render existing
+   admin panels inside the .main column. The design's .main has
+   `overflow: hidden` and expects flex children — so any tab content that
+   isn't a chat header / dash needs its own flex:1 scroll container. */
+.fusio-scroll-pad {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px 32px;
+  min-height: 0;
+}
+/* (Redundant fusio-scroll-pad mobile rule removed — handled in the
+   unified mobile block above.) */
+
+/* RunningLobster — decorative pixel lobster that crab-walks around the
+   thinking bubble. Used by components/chat/RunningLobster.tsx. */
+@keyframes lobster-run {
+  0%   { top: -8px;             left: 0;                       transform: scaleX(1); }
+  24%  { top: -8px;             left: calc(100% - 24px);       transform: scaleX(1); }
+  25%  { top: 0;                left: calc(100% - 8px);        transform: scaleX(1) rotate(90deg); }
+  49%  { top: calc(100% - 24px); left: calc(100% - 8px);       transform: scaleX(1) rotate(90deg); }
+  50%  { top: calc(100% - 8px); left: calc(100% - 24px);       transform: scaleX(-1); }
+  74%  { top: calc(100% - 8px); left: 0;                        transform: scaleX(-1); }
+  75%  { top: calc(100% - 24px); left: -8px;                    transform: scaleX(-1) rotate(90deg); }
+  99%  { top: 0;                left: -8px;                     transform: scaleX(-1) rotate(90deg); }
+  100% { top: -8px;             left: 0;                        transform: scaleX(1); }
+}
+.lobster-runner {
+  animation: lobster-run 8s linear infinite;
+}
+
+/* ============================================
+   FUSIO POLISH LAYER (Phases 8-11, 13)
+   Targeted overrides that re-shape ChatPanel and panels to match the
+   Fusio design without rewriting the component code. The static
+   /fusio/mc.css already provides .shell / .sidebar / .sessions /
+   .chat-head / .composer styling for the Fusio-rendered chrome; these
+   overrides handle the inner ChatPanel content + non-chat panels.
+   ============================================ */
+
+/* Phase 8 — Message bubbles: centered max-w 820, lighter padding, code/pre
+   styled per design (Ink panels, Red inline code accent). ChatPanel's
+   Virtuoso list is the scroll container; the OUTER message wrapper gets
+   centered. */
+.shell .fusio-main [class*="bg-terminal-surface"] [class*="overflow-y-auto"] > div > div {
+  max-width: 820px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+.shell .fusio-main pre {
+  background: var(--ink, #0A0A0E);
+  border: 1px solid var(--line, rgba(255,255,255,0.08));
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--fog, rgba(255,255,255,0.78));
+  overflow-x: auto;
+  margin: 10px 0;
+}
+.shell .fusio-main code:not(pre code) {
+  font-family: var(--font-mono);
+  background: var(--ink-2, #131319);
+  border: 1px solid var(--line, rgba(255,255,255,0.08));
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 12.5px;
+  color: var(--red, #CC0C20);
+}
+
+/* Phase 9 — Settings modal: rounded corners, Fusio borders, red save button. */
+.fixed.inset-0.bg-black\/80 > .bg-terminal-surface {
+  background: var(--ink, #0A0A0E) !important;
+  border: 1px solid var(--line, rgba(255,255,255,0.08)) !important;
+  border-radius: 14px !important;
+}
+.fixed.inset-0.bg-black\/80 h3 { font-family: var(--font-display); letter-spacing: -0.02em; }
+.fixed.inset-0.bg-black\/80 button.bg-terminal-green\/20 {
+  background: var(--red, #CC0C20) !important;
+  color: var(--white, #FFFFFF) !important;
+  border-color: var(--red, #CC0C20) !important;
+  box-shadow: 0 0 18px rgba(204,12,32,0.45);
+}
+.fixed.inset-0.bg-black\/80 button.bg-terminal-green\/20:hover {
+  background: var(--red-2, #9B0816) !important;
+}
+
+/* Phase 10/11 — Dashboard + panel cards: align with .task / .card design.
+   ChatPanel sub-panels (StatusPanel, SystemHealth, etc.) use terminal-*
+   tokens already remapped by Phase 3 — these rules just tighten borders
+   and radii so they match the design's 10-12px card aesthetic. */
+.shell .fusio-main [class*="border"][class*="rounded"] {
+  border-color: var(--line, rgba(255,255,255,0.08));
+}
+.shell .fusio-main [class*="rounded-lg"] { border-radius: 12px; }
+.shell .fusio-main [class*="rounded"]:not([class*="rounded-lg"]):not([class*="rounded-md"]):not([class*="rounded-sm"]):not([class*="rounded-full"]):not([class*="rounded-xl"]):not([class*="rounded-2xl"]) {
+  border-radius: 10px;
+}
+/* Mid-tone surfaces use --ink-2 for raised feel */
+.shell .fusio-main .bg-terminal-elevated { background: var(--ink-2, #131319); }
+
+/* Phase 13 — Polish: focus rings + selection */
+.shell *:focus-visible {
+  outline: 1px solid var(--red, #CC0C20);
+  outline-offset: 2px;
+}
+.shell ::selection { background: var(--red, #CC0C20); color: var(--white, #FFFFFF); }
+
+/* Better scroll bars across all panels inside the Fusio shell */
+.shell .fusio-main ::-webkit-scrollbar { width: 8px; height: 8px; }
+.shell .fusio-main ::-webkit-scrollbar-track { background: transparent; }
+.shell .fusio-main ::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.08); border-radius: 4px;
+}
+.shell .fusio-main ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
+
+/* Hide the legacy footer + duplicate scrollbar on the body — the Fusio
+   shell handles its own status (topbar) and overflow. */
+body > footer.fixed.bottom-0 { display: none; }
+
+/* ============================================
+   FUSIO PHASE 15-17: typography + dashboard + non-chat panel polish
+   ============================================ */
+
+/* Phase 15: Settings modal — tighter spacing, design font for headers */
+.fixed.inset-0 > .bg-terminal-surface label {
+  font-family: var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 10px;
+  color: var(--mist, rgba(255,255,255,0.5));
+}
+.fixed.inset-0 > .bg-terminal-surface h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.025em;
+  font-size: 17px;
+}
+.fixed.inset-0 > .bg-terminal-surface input[type=text],
+.fixed.inset-0 > .bg-terminal-surface input[type=password] {
+  background: var(--ink-2, #131319);
+  border: 1px solid var(--line, rgba(255,255,255,0.08));
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.fixed.inset-0 > .bg-terminal-surface input:focus {
+  border-color: var(--red, #CC0C20);
+  outline: none;
+}
+
+/* Phase 16: Dashboard panels — every section header gets the display font
+   with -0.02em letter spacing per the design. Panel inner padding tightened. */
+.shell .fusio-main h2,
+.shell .fusio-main h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+.shell .fusio-main h2 { font-size: 17px; }
+.shell .fusio-main h3 { font-size: 15px; }
+
+/* Status pills in panels — mono uppercase, 10px, 0.14em letter-spacing */
+.shell .fusio-main [class*="rounded-full"],
+.shell .fusio-main .text-xs.font-bold {
+  font-family: var(--font-mono);
+  letter-spacing: 0.12em;
+}
+
+/* Dashboard cards: stronger card aesthetic — Ink-2 surface, smaller radius
+   on inner items, restrained padding. Matches design's .task / .card. */
+.shell .fusio-main > div > div > .bg-terminal-surface,
+.shell .fusio-main .bg-terminal-surface {
+  background: var(--ink, #0A0A0E);
+  border-color: var(--line, rgba(255,255,255,0.08)) !important;
+  border-radius: 12px;
+}
+.shell .fusio-main .bg-terminal-elevated {
+  background: var(--ink-2, #131319);
+  border-radius: 10px;
+}
+.shell .fusio-main .bg-terminal-bg {
+  background: var(--void, #050507);
+}
+
+/* Section labels (e.g. STATUS / HEARTBEAT / CPU / MEMORY) — mono caps,
+   color: mist, no bold weight (the design lets the value carry the weight). */
+.shell .fusio-main [class*="uppercase"],
+.shell .fusio-main [class*="tracking-wider"],
+.shell .fusio-main [class*="tracking-widest"] {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  letter-spacing: 0.14em;
+}
+
+/* Progress / meter bars (SystemHealth) — slimmer, rounded, Ink-3 track */
+.shell .fusio-main [class*="h-2"][class*="rounded"],
+.shell .fusio-main [class*="h-1.5"][class*="rounded"] {
+  background: var(--ink-3, #1B1B23) !important;
+  border-radius: 99px;
+  height: 4px;
+}
+
+/* Phase 17: non-chat panels (Docs, Activity, Remote, etc.) — they all render
+   in the .fusio-main column on .no-sessions. Same panel-card rules apply.
+   Buttons in those panels match the design's pill aesthetic. */
+.shell .fusio-main button[class*="rounded"][class*="border"][class*="px-"] {
+  border-color: var(--line, rgba(255,255,255,0.08));
+  font-family: var(--font-sans);
+  font-weight: 500;
+}
+.shell .fusio-main button[class*="bg-terminal-green"]:not([class*="bg-terminal-green\\/"]) {
+  background: var(--red, #CC0C20);
+  color: var(--white, #FFFFFF);
+  border-color: var(--red, #CC0C20);
+  box-shadow: 0 0 14px rgba(204,12,32,0.35);
+}
+
+/* Tighter chat-message spacing inside Fusio shell — the .msg .body
+   typography already comes from /fusio/mc.css, but ChatPanel's renderContent
+   wraps content in extra divs. Reset their padding here. */
+.shell .fusio-main .msg .body > div { padding: 0; }
+.shell .fusio-main .msg.user .body > div {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+.shell .fusio-main .msg.ai .body > div {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+/* ============================================
+   FUSIO PHASE 22: long-tail panel polish
+   Catches the remaining ~25 admin panels (InnovationRadar, DocsPanel,
+   Workshop, GitHubPanel, HistoryPanel, QAPanel, ReportsPanel, LogsViewer,
+   PdfDigester, MemoryVaultPanel, TeamsPanel, DeployDashboard, GitPanel,
+   TestRunner, ApiTester, DatabaseExplorer, EnvironmentBar, ErrorTracker,
+   CodeSnippets, AgentsPanel, MemoryPanel, …) so they all share the same
+   intentional Fusio chrome without requiring per-component rewrites.
+   ============================================ */
+
+/* Outer panel chrome — most legacy panels use
+     bg-terminal-surface border border-terminal-border rounded-lg
+   inside the Fusio main column. Round them harder, use Ink as bg. */
+.shell .fusio-main .rounded-lg.border.border-terminal-border,
+.shell .fusio-main .bg-terminal-surface.border.border-terminal-border,
+.shell .fusio-main .bg-terminal-surface.rounded-lg {
+  background: var(--ink, #0A0A0E);
+  border-color: var(--line, rgba(255,255,255,0.08));
+  border-radius: 12px;
+}
+
+/* Section headers within panels — h2/h3 with font-bold get the Fusio
+   display family + tighter letter-spacing. The actual value/title is
+   carried by the next text. */
+.shell .fusio-main h2.font-bold,
+.shell .fusio-main h3.font-bold,
+.shell .fusio-main h4.font-bold {
+  font-family: var(--font-display, "Space Grotesk", sans-serif);
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+
+/* ALL-CAPS hard-coded label text (the legacy "PROJECTS", "SUB-AGENTS",
+   "ACTIVE BUILDS" style) — give them the mono eyebrow treatment. We
+   match by class to avoid catching everything in upper-case. */
+.shell .fusio-main [class*="text-terminal-dim"][class*="uppercase"],
+.shell .fusio-main [class*="text-terminal-green"][class*="uppercase"][class*="text-xs"],
+.shell .fusio-main [class*="text-terminal-cyan"][class*="uppercase"][class*="text-xs"] {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  letter-spacing: 0.14em;
+  font-weight: 500;
+  font-size: 10px;
+}
+
+/* Inner ink-2 cards (list rows, sub-cards) — slightly rounder, subtle
+   border that hugs the line. The legacy `rounded` (4px) is too tight
+   for the Fusio aesthetic; bump to 8px. */
+.shell .fusio-main .bg-terminal-bg.rounded,
+.shell .fusio-main .bg-terminal-bg.border {
+  border-radius: 8px;
+}
+
+/* Pill/badge with rounded class that includes a text-terminal-* — give
+   the Fusio mono uppercase look. */
+.shell .fusio-main span.rounded[class*="bg-terminal-"][class*="text-xs"] {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+/* Primary-style buttons across panels — the legacy
+     bg-terminal-green/20 text-terminal-green border border-terminal-green/30
+   pattern gets the Fusio primary-button feel (Signal Red ink). The
+   `:not([data-fusio])` lets per-panel rewrites opt out via data attribute. */
+.shell .fusio-main button[class*="bg-terminal-green/20"][class*="text-terminal-green"]:not([data-fusio]),
+.shell .fusio-main button[class*="bg-terminal-cyan/20"][class*="text-terminal-cyan"]:not([data-fusio]) {
+  font-family: var(--font-sans, system-ui);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0;
+  border-radius: 8px;
+  padding: 6px 14px;
+  transition: filter 120ms ease-out, transform 120ms ease-out;
+}
+.shell .fusio-main button[class*="bg-terminal-green/20"][class*="text-terminal-green"]:not([data-fusio]):hover,
+.shell .fusio-main button[class*="bg-terminal-cyan/20"][class*="text-terminal-cyan"]:not([data-fusio]):hover {
+  filter: brightness(1.08);
+}
+
+/* Inputs across panels — Ink-3 bg, rounded 8, line-color border. The
+   legacy `bg-terminal-bg border border-terminal-border` looks better
+   when it matches the design's input chrome exactly. */
+.shell .fusio-main input[type="text"]:not([data-fusio]),
+.shell .fusio-main input[type="search"]:not([data-fusio]),
+.shell .fusio-main input[type="email"]:not([data-fusio]),
+.shell .fusio-main input[type="password"]:not([data-fusio]),
+.shell .fusio-main input[type="number"]:not([data-fusio]),
+.shell .fusio-main textarea:not([data-fusio]) {
+  background: var(--ink-3, #1B1B23);
+  border-color: var(--line, rgba(255,255,255,0.08));
+  border-radius: 8px;
+  font-family: var(--font-sans, system-ui);
+}
+.shell .fusio-main input:focus,
+.shell .fusio-main textarea:focus {
+  border-color: var(--red, #CC0C20);
+  box-shadow: 0 0 0 2px rgba(204, 12, 32, 0.15);
+}
+
+/* Tabs — many panels use a row of `px-3 py-1 rounded text-sm` buttons
+   for tab switching. Smooth them with Fusio chrome. */
+.shell .fusio-main button[class*="rounded"][class*="text-sm"][class*="px-3"][class*="py-1"]:not([data-fusio]) {
+  border-radius: 6px;
+  font-family: var(--font-sans, system-ui);
+  font-weight: 500;
+}
+
+/* Empty-state icons — the legacy "Lucide icon, opacity-50, mb-2" pattern
+   used inside text-center blocks. Soften to mist tone. */
+.shell .fusio-main [class*="text-center"][class*="py-"] svg.opacity-50 {
+  color: var(--mist, rgba(255,255,255,0.5));
+  opacity: 0.4;
+}
+
+/* Modal overlays inside panels — uniform backdrop blur. */
+.shell .fusio-main .fixed.inset-0.bg-black\/50,
+.shell .fusio-main .fixed.inset-0.bg-black\/60,
+.shell .fusio-main .fixed.inset-0.bg-black\/70 {
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(3px);
+}
+
+
+/* ─── Fullscreen chat — terminal look ──────────────────────────────────
+   When body[data-mc-fullscreen-chat="1"] is set (toggled by the Exit/Full
+   pill in FusioChatHeader, or by ⌘./Ctrl+. anywhere in the app):
+     1. Hide the entire Fusio chat stack (sidebar, topbar, sessions, the
+        regular chat-head, the regular composer, ChatPanel's inner UI).
+     2. Show the dedicated <TerminalChat> overlay component instead.
+   The actual chat data layer (ChatPanel + chat-broadcast) stays mounted
+   so SDK sessions, MCP tools, memory injection, and per-turn autoload
+   all keep working. We just swap the visible surface. */
+
+body[data-mc-fullscreen-chat="1"] .shell .sidebar,
+body[data-mc-fullscreen-chat="1"] .shell .topbar,
+body[data-mc-fullscreen-chat="1"] .shell .sessions,
+body[data-mc-fullscreen-chat="1"] footer {
+  display: none !important;
+}
+
+/* Collapse the shell grid to a single cell so .main fills the viewport. */
+body[data-mc-fullscreen-chat="1"] .shell {
+  grid-template-columns: 1fr !important;
+  grid-template-rows: 1fr !important;
+  height: 100vh !important;
+  width: 100vw !important;
+}
+
+body[data-mc-fullscreen-chat="1"] .shell .main {
+  grid-column: 1 / -1 !important;
+  grid-row: 1 / -1 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  height: 100vh !important;
+}
+
+/* Inside the chat tab wrappers (the per-tab .h-full.flex.flex-col), hide
+   the regular FusioChatHeader + the composer + the visible ChatPanel
+   wrapper. We leave ChatPanel itself in the DOM (offscreen) so the
+   mc-chat-send bridge + SDK session keep working. */
+body[data-mc-fullscreen-chat="1"] .chat-head,
+body[data-mc-fullscreen-chat="1"] .composer-wrap,
+body[data-mc-fullscreen-chat="1"] .strip {
+  display: none !important;
+}
+
+/* Hide the ChatPanel inner UI without unmounting it — ChatPanel listens
+   for mc-chat-send and runs the actual API call, so it must stay alive.
+   We push it 0×0 and visually-hidden. The terminal-chat overlay covers
+   what would have been its space. */
+body[data-mc-fullscreen-chat="1"] .shell .main > div.h-full.flex.flex-col > div.flex-1.min-h-0.overflow-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Terminal-chat overlay — covers the entire .main area. */
+.terminal-chat {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #0A0A0E;  /* matches the Termius/Claude Code dark */
+  font-family: var(--font-mono, ui-monospace, "JetBrains Mono", "SF Mono", Consolas, monospace);
+  color: rgba(255, 255, 255, 0.88);
+  z-index: 50;
+}
+
+/* Only show terminal-chat when fullscreen is on. */
+.terminal-chat { display: none; }
+body[data-mc-fullscreen-chat="1"] .terminal-chat { display: flex; }
+
+/* Top-right exit pin — the only mobile-tappable way out of fullscreen
+   mode (ESC and ⌘. still work on desktop). Kept small and subtle so it
+   doesn't break the terminal vibe, but a 32px hit target via padding so
+   it taps reliably on a phone. */
+.terminal-exit-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 60;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  -webkit-tap-highlight-color: transparent;
+}
+.terminal-exit-btn:hover,
+.terminal-exit-btn:focus-visible {
+  background: rgba(204, 12, 32, 0.16);
+  border-color: rgba(204, 12, 32, 0.45);
+  color: rgba(255, 255, 255, 0.92);
+  outline: none;
+}
+.terminal-exit-btn:active {
+  background: rgba(204, 12, 32, 0.28);
+}
+
+/* Scrollable message stream. */
+.terminal-stream {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 16px 14px 8px;
+  font-size: 13px;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+}
+.terminal-stream::-webkit-scrollbar { width: 6px; }
+.terminal-stream::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+}
+
+/* User messages — full-width muted-teal highlight bar, exactly like the
+   Termius reference screenshot. No bubble, no avatar, no role label. */
+.terminal-msg-user {
+  background: rgba(94, 196, 217, 0.16);
+  margin: 6px -14px 8px;
+  padding: 8px 14px;
+  border-left: 2px solid rgba(94, 196, 217, 0.55);
+}
+.terminal-msg-user .text {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* System messages — same shape but amber-tinted. */
+.terminal-msg-system {
+  margin: 6px 0 8px;
+  padding: 4px 0 4px 12px;
+  border-left: 2px solid rgba(232, 162, 59, 0.45);
+  color: rgba(232, 162, 59, 0.85);
+  display: flex;
+  gap: 8px;
+}
+.terminal-msg-system .pip { flex: 0 0 auto; }
+.terminal-msg-system .text { flex: 1 1 auto; white-space: pre-wrap; }
+
+/* Assistant messages — ● leading pip, plain text, no bubble. */
+.terminal-msg-assistant {
+  margin: 4px 0 12px;
+  padding: 0;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.terminal-msg-assistant .pip {
+  flex: 0 0 auto;
+  color: #4CC38A;
+  font-size: 14px;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+.terminal-msg-assistant.streaming .pip {
+  color: #5EC4D9;
+  animation: terminal-pip-pulse 1.2s ease-in-out infinite;
+}
+@keyframes terminal-pip-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+.terminal-msg-assistant .text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Reset MessageContent's typography inside the terminal stream so the
+   inherited Fusio classes don't impose bubble fonts/sizes. We target
+   common children defensively because MessageContent renders via an
+   inline markdown approach. */
+.terminal-msg-assistant .text,
+.terminal-msg-assistant .text p,
+.terminal-msg-assistant .text li,
+.terminal-msg-assistant .text div {
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.88);
+}
+.terminal-msg-assistant .text p { margin: 0 0 8px; }
+.terminal-msg-assistant .text p:last-child { margin-bottom: 0; }
+.terminal-msg-assistant .text ul,
+.terminal-msg-assistant .text ol {
+  margin: 4px 0 8px;
+  padding-left: 20px;
+}
+.terminal-msg-assistant .text li { margin: 2px 0; }
+.terminal-msg-assistant .text strong { color: rgba(255, 255, 255, 0.98); font-weight: 600; }
+.terminal-msg-assistant .text em { color: rgba(255, 255, 255, 0.85); font-style: italic; }
+
+/* Inline code — cyan pill. */
+.terminal-msg-assistant .text code {
+  background: rgba(94, 196, 217, 0.12);
+  color: #5EC4D9;
+  border: 1px solid rgba(94, 196, 217, 0.24);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: inherit;
+  font-size: 12.5px;
+}
+
+/* Block code — dark slab, thin border, sharp corners. */
+.terminal-msg-assistant .text pre {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 4px;
+  padding: 10px 12px;
+  margin: 8px 0;
+  overflow-x: auto;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.terminal-msg-assistant .text pre code {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.88);
+  padding: 0;
+  font-size: 12px;
+}
+
+/* Tables — thin box-drawn, dim borders, header tinted. */
+.terminal-msg-assistant .text table {
+  border-collapse: collapse;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  margin: 6px 0 10px;
+  font-size: 12px;
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.terminal-msg-assistant .text th,
+.terminal-msg-assistant .text td {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 4px 8px;
+  text-align: left;
+  white-space: nowrap;
+}
+.terminal-msg-assistant .text th {
+  background: rgba(94, 196, 217, 0.06);
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Headers within assistant text — uppercase mono small-caps for section feel. */
+.terminal-msg-assistant .text h1,
+.terminal-msg-assistant .text h2,
+.terminal-msg-assistant .text h3 {
+  font-family: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.94);
+  margin: 12px 0 4px;
+  font-weight: 600;
+}
+
+/* Streaming-elapsed status line — appears beneath the in-flight reply. */
+.terminal-elapsed {
+  margin-top: 4px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.32);
+  font-family: inherit;
+  letter-spacing: 0.01em;
+}
+
+/* Input row — > prompt + clean textarea. No buttons, no chrome. */
+.terminal-input-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 14px 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  flex: 0 0 auto;
+}
+.terminal-prompt {
+  color: #CC0C20;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  flex: 0 0 auto;
+  user-select: none;
+  margin-top: 2px;
+}
+.terminal-input {
+  flex: 1 1 auto;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  color: rgba(255, 255, 255, 0.94);
+  font-family: inherit;
+  font-size: 13.5px;
+  line-height: 1.5;
+  padding: 0;
+  margin: 0;
+  min-height: 21px;
+  overflow-y: hidden;
+  caret-color: #5EC4D9;
+}
+.terminal-input::placeholder { color: rgba(255, 255, 255, 0.2); }
+
+/* Bottom hint line — exactly the "bypass permissions on (shift+tab to cycle)"
+   slot from the Claude Code screenshot. */
+.terminal-hint {
+  padding: 4px 14px 12px;
+  font-family: inherit;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.28);
+  letter-spacing: 0.02em;
+  user-select: none;
+  flex: 0 0 auto;
+}
+
+/* Mobile tweaks. */
+@media (max-width: 767px) {
+  .terminal-stream { padding: 12px 10px 6px; font-size: 13px; }
+  .terminal-input-wrap { padding: 10px 10px 4px; }
+  .terminal-hint { padding: 4px 10px 10px; font-size: 10px; }
+  .terminal-msg-user { margin: 6px -10px 8px; padding: 8px 10px; }
+}
